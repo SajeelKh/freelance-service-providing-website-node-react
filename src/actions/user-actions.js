@@ -12,6 +12,7 @@ const login = (username, password) => async (dispatch) => {
     try{
         let user = await userServices.login(username, password);
         dispatch(success(user));
+        dispatch(alertActions.success("Login Successful"));
     }
     catch(err) {
         dispatch(failure(err));

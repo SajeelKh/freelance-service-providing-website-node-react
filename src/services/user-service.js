@@ -1,3 +1,4 @@
+import axios from 'axios';
 import config from '../config.json';
 import { authHeader } from '../helpers/auth-header';
 
@@ -12,10 +13,10 @@ function login(username, password) {
             password,
         })
     }
-
+    
     return fetch(`${config.url}/users/authenticate`, requestOptions)
-        .then(handleResponse).then((user) => {
-            localStorage.setItem('user', user);
+        .then(user => user.json()).then(handleResponse).then((user) => {
+            localStorage.setItem('user', JSON.stringify(user));
             return user;
         }).catch(err => {
             throw err;
@@ -33,7 +34,7 @@ function getAll() {
             Authorization: authHeader()
         }
     }
-    return window.fetch(`${config.url}/users/`, requestOptions)
+    return window.fetch(`${config.url}/users`, requestOptions)
         .then(handleResponse)
         .catch(err => {
             throw err;
@@ -41,11 +42,12 @@ function getAll() {
 }
 
 function handleResponse(res) {
-    if (res.ok) {
-        return res.data;
+    console.log(res);
+    if (res.status) {
+        throw new Error(res.message);
     }
     else {
-        throw new Error('Internal Server Error');
+        return res;
     }
 }
 

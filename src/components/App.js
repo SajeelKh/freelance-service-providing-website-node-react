@@ -1,12 +1,22 @@
 import React, { Component } from 'react';
 import { NavLink, Route, Switch } from 'react-router-dom';
 import { connect } from 'react-redux';
+import { history } from '../helpers/history';
+import { alertActions } from '../actions';
 import PrivateRoute from './PrivateRoute';
 import Home from './Home';
 import Login from './Login';
 import '../styles/App.css'
 
 class App extends Component {
+  constructor(props){
+    super(props);
+
+    history.listen((location, action) => {
+      this.props.clear();
+    });
+  }
+
   render() {
     const alert = this.props.alert;
     return (
@@ -34,6 +44,6 @@ const mapStateToProps = (state) => {
   }
 }
 
-App = connect(mapStateToProps)(App);
+App = connect(mapStateToProps, { ...alertActions })(App);
 
 export default App;
